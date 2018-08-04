@@ -11,6 +11,7 @@
     <bean id="id3v24Tag" class="com.mpatric.mp3agic.ID3v24Tag"/>
     <bean id="googleMusicDateFormat" class="java.text.SimpleDateFormat">
         <constructor-arg value="dd MMM yyyy г."/>
+        <constructor-arg value="yyyy"/>
     </bean>
 
 </beans>
