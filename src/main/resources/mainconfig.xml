@@ -2,17 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       default-lazy-init="true"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <context:component-scan base-package="ru"/>
 
 
-    <bean id="tagFillerTest" class="ru.mp3.filler.tagwork.TagFiller">
-        <property name="mp3File" ref="getMp3File"/>
+    <bean id="tagFinder" class="ru.mp3.filler.tagwork.TagFinder"/>
+    <bean id="id3v24Tag" class="com.mpatric.mp3agic.ID3v24Tag"/>
+    <bean id="googleMusicDateFormat" class="java.text.SimpleDateFormat">
+        <constructor-arg value="dd MMM yyyy г."/>
     </bean>
-
-    <bean id="mp3OpenTest" class="ru.mp3.filler.Mp3Opener">
-        <property name="path" value="D:\Projects\JavaProjects\Spring\MP3TagAutoEditor\src\main\resources\Imagine Dragons - Believer .mp3"/>
-    </bean>
-
 
 </beans>

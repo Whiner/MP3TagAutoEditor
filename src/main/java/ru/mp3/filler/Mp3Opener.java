@@ -16,28 +16,6 @@ import java.util.List;
 @Component
 public class Mp3Opener {
 
-    private String path;
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-
-    @Bean
-    @Qualifier("mp3")
-    public Mp3File getMp3File() throws InvalidDataException, IOException, UnsupportedTagException {
-        return open();
-    }
-
-
-    public Mp3File open() throws InvalidDataException, IOException, UnsupportedTagException {
-        return new Mp3File(path);
-    }
-
     public static Mp3File open(String path) throws InvalidDataException, IOException, UnsupportedTagException {
         return new Mp3File(path);
     }
@@ -49,7 +27,9 @@ public class Mp3Opener {
             File[] files = file.listFiles();
             if (files != null) {
                 for (File f: files){
-                    list.add(new Mp3File(f.getPath()));
+                    if(!f.isDirectory()) {
+                        list.add(new Mp3File(f.getPath()));
+                    }
                 }
             } else {
                 throw new NullPointerException("folder is empty");
