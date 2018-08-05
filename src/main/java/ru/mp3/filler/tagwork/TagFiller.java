@@ -69,7 +69,7 @@ public class TagFiller {
 
         tag.setGenreDescription(tags.get("genre"));
         if(tags.get("date") != null){
-            ReleaseDate releaseDate = CustomBeanFactory.getInstance().getBean("releaseDate", ReleaseDate.class);
+            ReleaseDate releaseDate = CustomBeanFactory.getInstance().getBean("googleMusicDateFormat", ReleaseDate.class);
             try {
                 releaseDate.fromString(tags.get("date"));
             } catch (ParseException e) {

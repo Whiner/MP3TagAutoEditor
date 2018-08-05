@@ -9,7 +9,7 @@
 
     <bean id="tagFinder" class="ru.mp3.filler.tagwork.TagFinder"/>
     <bean id="id3v24Tag" class="com.mpatric.mp3agic.ID3v24Tag"/>
-    <bean id="googleMusicDateFormat" class="java.text.SimpleDateFormat">
+    <bean id="googleMusicDateFormat" class="ru.mp3.filler.ReleaseDate">
         <constructor-arg value="dd MMM yyyy г."/>
         <constructor-arg value="yyyy"/>
     </bean>

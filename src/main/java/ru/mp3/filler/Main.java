@@ -14,6 +14,12 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
+/*
+* надо алгоритм сравнивания слов для поиска трека
+* надо защиту от защиты гугла)))) шоб мог подключаться норм
+* когда чисто название трека - попробовать парсить с помощью тега. если его нету - то пробовать уже как есть сейчас и переименовывать трек норм
+* парсить картинку альбома
+* */
 public class Main {
     public static void main(String[] args) {
 //        final TagFiller test = CustomBeanFactory.getInstance().getBean("tagFillerTest", TagFiller.class);
@@ -38,12 +44,14 @@ public class Main {
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("log.txt"))) {
             TagFiller.setTagFiller((TagFinder) CustomBeanFactory.getInstance().getBean("tagFinder"));
-            final List<Mp3File> files = Mp3Opener.openAll("music/m");
+            final List<Mp3File> files = Mp3Opener.openAll("music");
             all = files.size();
+            System.out.println("------------------------------------------");
             for (Mp3File mp3: files){
                 try {
                     Mp3File filled = TagFiller.fill(mp3);
                     ID3v2 tag = filled.getId3v2Tag();
+                    System.out.println("+ " + new File(mp3.getFilename()).getName());
                     bufferedWriter.write(tag.getArtist() + " - "
                             + tag.getTitle()
                             + " (" + tag.getGenreDescription()
@@ -51,12 +59,12 @@ public class Main {
                             + " Year " + tag.getYear() + "\n");
                     success++;
                 } catch (PageNotFoundException e){
+                    System.out.println("- " + new File(mp3.getFilename()).getName());
                     bufferedWriter.write("Ошибка(Page) " + new File(mp3.getFilename()).getName() + " ------------------------------------\n");
                 } catch (ParseException e) {
+                    System.out.println("- " + new File(mp3.getFilename()).getName());
                     bufferedWriter.write("Ошибка(Prse) " + new File(mp3.getFilename()).getName() + " ------------------------------------\n");
-
                 }
-
             }
         } catch (InvalidDataException | IOException | UnsupportedTagException e) {
             e.printStackTrace();

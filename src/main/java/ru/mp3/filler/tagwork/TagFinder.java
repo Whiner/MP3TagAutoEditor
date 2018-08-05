@@ -26,8 +26,8 @@ public class TagFinder { //парсить еще название песни и 
 
     }
 
-    public Map<String, String> findTags(String artist, String title) throws PageNotFoundException, Exception {
-        Map<String, String> tags = new HashMap<String, String>();
+    public Map<String, String> findTags(String artist, String title) throws Exception {
+        Map<String, String> tags = new HashMap<>();
         try {
             Document albumPage = getAlbumPage(getSearchPage(artist + " " + title), title);
             try {
@@ -48,7 +48,7 @@ public class TagFinder { //парсить еще название песни и 
                 tags.put("title", getTitle(trackListElement));
             }
 
-        } catch (PageNotFoundException | IOException e){
+        } catch (PageNotFoundException e){
             throw new PageNotFoundException("Не получилось найти этот трек. Попробуйте переименовать его в формате \"Исполнитель - Название\"." +
                     " Если данное условие выполнено - и ошибка повторилась - ничем не могу помочь ¯ \\ _ (ツ) _ / ¯");
         }
@@ -107,23 +107,33 @@ public class TagFinder { //парсить еще название песни и 
     }
 
 
-    private Document getAlbumPage(Document searchPage, String title) throws IOException { //выбирать исходя из цены. трек стоит меньше 10-19р
+    private Document getAlbumPage(Document searchPage, String title) throws IOException {
         Elements el = searchPage.select("div.id-cluster-container");
 
         String albumUrl = GOOGLE_MUSIC_HOME_URL;
+        boolean found = false;
         for (Element element: el) {
             if (element.child(0).child(0).child(0).child(0).ownText().equals("Треки")) {
                 Element tracksBlock = element.child(0).child(1);
-                int trackBlockNumber = 0;
-                String s = tracksBlock.child(trackBlockNumber).child(0).child(2).child(1).ownText().toLowerCase();
+
                 title = title.toLowerCase();
-                while (!s.contains(title) || !s.equalsIgnoreCase(title) ) { // тут чет надо глянуть. Если есть прайс - норм. нету - следующий надо про
-                    if(tracksBlock.child(trackBlockNumber).select("span.display-price").first() == null){
-                        trackBlockNumber++;
+                Elements tracks = tracksBlock.select("div.card.no-rationale.square-cover.music");
+                for (Element track: tracks){
+                    String s = track.child(0).child(2).child(1).text().toLowerCase();
+                    if(s.contains(title) || s.equalsIgnoreCase(title)){
+                        Element price = track.select("span.display-price").first();
+                        if(price != null && Integer.valueOf(price.ownText().split(",")[0]) < 50){
+                            albumUrl = albumUrl.concat(track.child(0).child(2).child(0).attr("href"));
+                            found = true;
+                            break;
+                        }
                     }
                 }
-                albumUrl = albumUrl.concat(tracksBlock.child(0).child(0).child(2).child(0).attr("href"));
-                break;
+                if(found){
+                    break;
+                }
+
+
             }
         }
         return Jsoup.connect(albumUrl).get(); // ошибка когда 404 вылетает

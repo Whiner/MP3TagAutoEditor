@@ -35,7 +35,6 @@ public class ReleaseDate extends java.util.GregorianCalendar {
         super(year, month, dayOfMonth);
     }
 
-    @Autowired
     public ReleaseDate(SimpleDateFormat dateFormat, SimpleDateFormat spareDateFormat){
         this.dateFormat = dateFormat;
         this.spareDateFormat = spareDateFormat;
