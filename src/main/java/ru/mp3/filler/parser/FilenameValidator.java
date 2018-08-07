@@ -9,6 +9,7 @@ public class FilenameValidator {
         filename = getWithout("\\[.*]", filename);
         filename = getWithout("\\(.*[feat|ft|Feat].*\\)", filename);
         filename = getWithout("\\(*ft.*\\)*", filename);
+        filename = getWithout("\\(.*\\)", filename);
         return filename.trim();
     }
 

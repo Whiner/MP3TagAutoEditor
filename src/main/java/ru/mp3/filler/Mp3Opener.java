@@ -27,8 +27,8 @@ public class Mp3Opener {
             File[] files = file.listFiles();
             if (files != null) {
                 for (File f: files){
-                    System.out.println("Added " + f.getName());
                     if(!f.isDirectory()) {
+                        System.out.println("Added " + f.getName());
                         list.add(new Mp3File(f.getPath()));
                     }
                 }

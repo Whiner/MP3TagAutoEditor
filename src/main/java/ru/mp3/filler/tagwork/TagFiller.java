@@ -32,6 +32,24 @@ public class TagFiller {
             File file = new File(mp3File.getFilename());
             String filename = FilenameValidator.validate(file.getName());
 
+
+            Map<String, String> tags;
+            try {
+                tags = tagFinder.findTags(
+                        Parser.parseArtist(filename, NameSeparator.getSEPARATOR()),
+                        Parser.parseTitle(filename, NameSeparator.getSEPARATOR()));
+            } catch (ParseException e){
+                String artist = null;
+                if (mp3File.hasId3v2Tag()) {
+                    artist = mp3File.getId3v2Tag().getArtist();
+                } else if (mp3File.hasId3v1Tag()){
+                    artist = mp3File.getId3v1Tag().getArtist();
+                }
+                if(artist == null){
+                    artist = "";
+                }
+                tags = tagFinder.findTags(artist, FilenameValidator.getWithout(".mp3", filename));
+            }
             if (mp3File.hasId3v1Tag()) {
                 mp3File.removeId3v1Tag();
             }
@@ -41,19 +59,7 @@ public class TagFiller {
             if (mp3File.hasCustomTag()) {
                 mp3File.removeCustomTag();
             }
-            Map<String, String> tags;
-            try {
-                tags = tagFinder.findTags(
-                        Parser.parseArtist(filename, NameSeparator.getSEPARATOR()),
-                        Parser.parseTitle(filename, NameSeparator.getSEPARATOR()));
-            } catch (ParseException e){
-                tags = tagFinder.findTags("", FilenameValidator.getWithout(".mp3", filename));
-            }
             ID3v24Tag tag = fillByMap(tags);
-
-
-            //tag.setArtist(artist);
-            //tag.setTitle(title);
 
             mp3File.setId3v2Tag(tag);
 
